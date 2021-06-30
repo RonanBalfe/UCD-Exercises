@@ -1,8 +1,7 @@
 import pandas as pd
 import numpy as np
 
-deposits = pd.read_csv("/Users/Balfe/PycharmProjects/UCD Exercises/Data/database.csv")
-print(deposits)
+deposits = pd.read_csv("/Users/Balfe/PycharmProjects/UCD Exercises/venv/database.csv")
 
 print(deposits.describe())
 print(deposits.head(5))
