@@ -9,4 +9,4 @@ parsed_data=data.json()
 print(parsed_data)
 
 for i in parsed_data["people"]:
-    print(i["name"])
+print(i["name"])
