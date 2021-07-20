@@ -61,30 +61,37 @@ Multi_Large = df_deposits[Is_Large & Is_NYC_or_LA_or_CH]
 print(NYC_Large)
 print(Multi_Large)
 
-# Looping
-#for row in deposits_ind[0]:
-    #range = row[0]
-    #row[0] =range
-   # print(deposits_ind)
+
 
 # Grouping
 df_pivot= pd.pivot_table(df_deposits,["2010 Deposits","2016 Deposits"], "State")
 
 # Join dataframes
 df_deposits2 = df_pivot.merge(df_populations, on='State')
-print(df_deposits2)
+
+# Looping,iterrows
+
+
+
+
+#for row in deposits_ind[0]:
+    #range = row[0]
+    #row[0] =range
+   # print(deposits_ind)
 
 # Plotting
-
 #Fig 1: Total deposits by State
-ax = df_pivot.plot(alpha = 0.6, kind="bar", title= "Deposits by State")
-ylab = ax.set_ylabel('Deposit total $', weight='bold', size=12)
-xlab = ax.set_xlabel('US States', weight='bold', size=12)
+ax= df_pivot.plot(alpha = 0.6, kind="bar", title= "Deposits by State")
+ylab= ax.set_ylabel('Deposit total $', weight='bold', size=12)
+xlab= ax.set_xlabel('US States', weight='bold', size=12)
+for label in ax.get_xticklabels():
+  label.set_rotation(45)
 plt.show()
 
-#Fig 1: 2016 Population by State
+#Fig 2: 2016 Population by State
 df_deposits2.plot(x="State", y="2016 Population", kind="bar", title= "State populations")
 plt.show()
+
 
 # Map marking citys with deposits > 1m
 #df_large.loc[:, 'Marker'] = df_large["Branch Name"] + ' ' + df_large["2016 Deposits"].map('${:,.0f}'.format)
