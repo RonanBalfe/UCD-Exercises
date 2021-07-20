@@ -1,4 +1,8 @@
 
+
+pip install matplotlib
+
+
 "All we need for API is these 4 lines"
 
 
@@ -10,3 +14,5 @@ print(parsed_data)
 
 for i in parsed_data["people"]:
 print(i["name"])
+
+
