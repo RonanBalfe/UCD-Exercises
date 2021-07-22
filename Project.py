@@ -41,14 +41,14 @@ df_deposits['2010 Deposits'] = df_deposits['2010 Deposits'].astype(np.int64)
 print(df_deposits.describe(include='int64').T)
 
 # Subsetting - create Large deposits subset dataframe
-df_large = df_deposits[df_deposits["2016 Deposits"] > 1000000]
+df_large = df_deposits.loc[df_deposits["2016 Deposits"] > 1000000,("Branch Name","2016 Deposits","Latitude","Longitude")]
 
 #Map marking citys with deposits > 1m
 df_large.loc[:, 'Marker'] = df_large["Branch Name"] + ' ' + df_large["2016 Deposits"].map('${:,.0f}'.format)
-Chase_map= folium.Map(location=[40, -99], tiles="OpenStreetMap", zoom_start=5)
+Chase_map = folium.Map(location=[40, -99], tiles="OpenStreetMap", zoom_start=5)
 for index, row in df_large.iterrows():
     folium.Marker([row['Latitude'], row['Longitude']], popup=row['Marker'],
-                 icon=folium.map.Icon(icon='usd')).add_to(Chase_map)
+                  icon=folium.map.Icon(icon='usd')).add_to(Chase_map)
 Chase_map.save('map.html')
 
 # Pivots
@@ -56,7 +56,7 @@ df_pivot = pd.pivot_table(df_deposits, ["2010 Deposits", "2013 Deposits", "2016 
                           aggfunc={"2010 Deposits": np.sum, "2013 Deposits": np.sum, "2016 Deposits": np.sum})
 
 # Looping,iterrows
-for index,row in df_deposits.iterrows():
+for index, row in df_deposits.iterrows():
     df_deposits.loc[index, 'Movement since 2010'] = row['2016 Deposits'] - row['2010 Deposits']
 print(df_deposits.head(20))
 
@@ -79,7 +79,7 @@ print(Multi_Large)
 State_Names = [{'State': 'AZ', 'StateNames': 'Arizona'}, {'State': 'CA', 'StateNames': 'California'}, {'State': 'CO', 'StateNames': 'Colarado'}, {'State': 'CT','StateNames':'Connecticut'}, {'State': 'DC','StateNames':'D.C.'}, {'State': 'FL','StateNames': 'Florida'},
               {'State': 'GA', 'StateNames': 'Georgia'}, {'State': '''ID''', 'StateNames': '''Idaho'''}, {'State': 'IL', 'StateNames': 'Illinois'}, {'State': 'IN','StateNames':'Indiana'}, {'State': 'KY','StateNames':'Kentucky'}, {'State': 'LA','StateNames': 'Louisiana'},
               {'State': 'MA', 'StateNames': 'Massachusetts'}, {'State': 'MI', 'StateNames': 'Michigan'}, {'State': 'NV', 'StateNames': 'Nevada'}, {'State': 'NJ','StateNames':'New Jersey'}, {'State': 'NY','StateNames':'New York'}, {'State': 'OH','StateNames': 'Ohio'},
-              {'State':'OK', 'StateNames': 'Oklahoma'}, {'State': 'OR','StateNames': 'Oregon'}, {'State': 'PA', 'StateNames': 'Pennsylvania'}, {'State': 'TX','StateNames':'Texas'}, {'State': 'UT','StateNames':'Utah'}, {'State':'WA','StateNames':'Washington'},
+              {'State':'OK', 'StateNames': 'Oklahoma'}, {'State': 'OR', 'StateNames': 'Oregon'}, {'State': 'PA', 'StateNames': 'Pennsylvania'}, {'State': 'TX','StateNames':'Texas'}, {'State': 'UT','StateNames':'Utah'}, {'State':'WA','StateNames':'Washington'},
               {'State':'WV', 'StateNames': 'West Virginia'}, {'State': 'WI', 'StateNames': ' Wisconsin'}]
 
 df_StateNames =pd.DataFrame(data= State_Names)
@@ -125,12 +125,8 @@ ax.yaxis.set_major_formatter(ticks_y)
 plt.locator_params(axis="y", nbins=20)
 plt.show()
 
-
-
 # Grouping
 print(df_deposits2.groupby("State")["2016 Deposits"].mean())
-
-
 
 # JP Morgan Data from online API:
 api_data = requests.get('https://www.alphavantage.co/query?function=OVERVIEW&symbol=JPM&apikey=93WPKVHEISL8FOW3')
