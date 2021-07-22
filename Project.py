@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 import requests
 import matplotlib.ticker as ticker
+import datetime
 
 # Import csv files:
 df_deposits = pd.read_csv("/Users/Balfe/PycharmProjects/UCD Exercises/venv/database.csv")
@@ -43,6 +44,14 @@ print(df_deposits.describe(include='int64').T)
 df_pivot = pd.pivot_table(df_deposits, ["2010 Deposits", "2013 Deposits", "2016 Deposits"], "State",
                           aggfunc={"2010 Deposits": np.sum, "2013 Deposits": np.sum, "2016 Deposits": np.sum})
 
+# Dictionary
+
+
+# Looping,iterrows
+for index,row in df_deposits.iterrows():
+    df_deposits.loc[index, 'Movement since 2010'] = row['2016 Deposits'] - row['2010 Deposits']
+print(df_deposits.head(20))
+
 # Join dataframes
 df_deposits2 = df_pivot.merge(df_populations, on='State')
 
@@ -52,9 +61,7 @@ deposits_ind.sort_index(level=["State"], ascending=[True])
 print(deposits_ind)
 print(deposits_ind.loc[["CA"]])
 
-# Looping,iterrows
-# for index, row in df_deposits2.iterrows():
-# O/S
+
 
 # Function to create reusable code. Note: Warning = 'PEP 8: E302 expected 2 blank lines.....' appears to be a bug
 def sub(a, b):
@@ -65,6 +72,9 @@ def sub(a, b):
 print(sub(df_deposits2['2016 Deposits'].sum(), df_deposits2['2010 Deposits'].sum()))
 print(sub(df_deposits2['2016 Deposits'].sum(), df_deposits2['2013 Deposits'].sum()))
 print(sub(df_deposits2['2013 Deposits'].sum(), df_deposits2['2010 Deposits'].sum()))
+
+
+
 
 # Plotting
 # Fig 1: Total deposits by State
