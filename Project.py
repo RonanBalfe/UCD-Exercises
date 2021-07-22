@@ -17,6 +17,8 @@ pd.set_option('display.width', 3000)
 
 # Initial analysis:
 print(df_deposits.columns)
+print(df_deposits.info())
+print(df_deposits.shape)
 
 # Clean-up - drop unwanted columns
 df_deposits.drop(columns=['Institution Name', 'Branch Number', 'Established Date', 'Acquired Date', 'Street Address',
@@ -44,19 +46,19 @@ print(df_deposits.describe(include='int64').T)
 df_large = df_deposits.loc[df_deposits["2016 Deposits"] > 1000000, ("Branch Name", "2016 Deposits", "Latitude",
                                                                     "Longitude")]
 
-# Map marking citys with deposits > 1m
+# Map marking branches with deposits > 1m
 df_large.loc[:, 'Marker'] = df_large["Branch Name"] + ' ' + df_large["2016 Deposits"].map('${:,.0f}'.format)
 Chase_map = folium.Map(location=[40, -99], tiles="OpenStreetMap", zoom_start=5)
 for index, row in df_large.iterrows():
     folium.Marker([row['Latitude'], row['Longitude']], popup=row['Marker'],
                   icon=folium.map.Icon(icon='usd')).add_to(Chase_map)
-Chase_map.save('map.html')
+Chase_map.save('Chase_map.html')
 
 # Pivots
 df_pivot = pd.pivot_table(df_deposits, ["2010 Deposits", "2013 Deposits", "2016 Deposits"], "State",
                           aggfunc={"2010 Deposits": np.sum, "2013 Deposits": np.sum, "2016 Deposits": np.sum})
 
-# Looping,iterrows
+# Iterrows
 for index, row in df_deposits.iterrows():
     df_deposits.loc[index, 'Movement since 2010'] = row['2016 Deposits'] - row['2010 Deposits']
 print(df_deposits.head(20))
@@ -142,4 +144,5 @@ print(df_deposits2.groupby("State")["2016 Deposits"].mean())
 # JP Morgan Data from online API:
 api_data = requests.get('https://www.alphavantage.co/query?function=OVERVIEW&symbol=JPM&apikey=93WPKVHEISL8FOW3')
 parsed_data = api_data.json()
-print(parsed_data)
+df_CompanyOverview = pd.DataFrame(parsed_data, index=[0])
+print(df_CompanyOverview.T)
