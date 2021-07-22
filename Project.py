@@ -41,9 +41,10 @@ df_deposits['2010 Deposits'] = df_deposits['2010 Deposits'].astype(np.int64)
 print(df_deposits.describe(include='int64').T)
 
 # Subsetting - create Large deposits subset dataframe
-df_large = df_deposits.loc[df_deposits["2016 Deposits"] > 1000000,("Branch Name","2016 Deposits","Latitude","Longitude")]
+df_large = df_deposits.loc[df_deposits["2016 Deposits"] > 1000000, ("Branch Name", "2016 Deposits", "Latitude",
+                                                                    "Longitude")]
 
-#Map marking citys with deposits > 1m
+# Map marking citys with deposits > 1m
 df_large.loc[:, 'Marker'] = df_large["Branch Name"] + ' ' + df_large["2016 Deposits"].map('${:,.0f}'.format)
 Chase_map = folium.Map(location=[40, -99], tiles="OpenStreetMap", zoom_start=5)
 for index, row in df_large.iterrows():
@@ -76,20 +77,30 @@ print(NYC_Large)
 print(Multi_Large)
 
 # Dictionary
-State_Names = [{'State': 'AZ', 'StateNames': 'Arizona'}, {'State': 'CA', 'StateNames': 'California'}, {'State': 'CO', 'StateNames': 'Colarado'}, {'State': 'CT','StateNames':'Connecticut'}, {'State': 'DC','StateNames':'D.C.'}, {'State': 'FL','StateNames': 'Florida'},
-              {'State': 'GA', 'StateNames': 'Georgia'}, {'State': '''ID''', 'StateNames': '''Idaho'''}, {'State': 'IL', 'StateNames': 'Illinois'}, {'State': 'IN','StateNames':'Indiana'}, {'State': 'KY','StateNames':'Kentucky'}, {'State': 'LA','StateNames': 'Louisiana'},
-              {'State': 'MA', 'StateNames': 'Massachusetts'}, {'State': 'MI', 'StateNames': 'Michigan'}, {'State': 'NV', 'StateNames': 'Nevada'}, {'State': 'NJ','StateNames':'New Jersey'}, {'State': 'NY','StateNames':'New York'}, {'State': 'OH','StateNames': 'Ohio'},
-              {'State':'OK', 'StateNames': 'Oklahoma'}, {'State': 'OR', 'StateNames': 'Oregon'}, {'State': 'PA', 'StateNames': 'Pennsylvania'}, {'State': 'TX','StateNames':'Texas'}, {'State': 'UT','StateNames':'Utah'}, {'State':'WA','StateNames':'Washington'},
-              {'State':'WV', 'StateNames': 'West Virginia'}, {'State': 'WI', 'StateNames': ' Wisconsin'}]
+State_Names = [{'State': 'AZ', 'StateNames': 'Arizona'}, {'State': 'CA', 'StateNames': 'California'},
+               {'State': 'CO', 'StateNames': 'Colarado'}, {'State': 'CT', 'StateNames': 'Connecticut'},
+               {'State': 'DC', 'StateNames': 'D.C.'}, {'State': 'FL', 'StateNames': 'Florida'},
+               {'State': 'GA', 'StateNames': 'Georgia'}, {'State': '''ID''', 'StateNames': '''Idaho'''},
+               {'State': 'IL', 'StateNames': 'Illinois'}, {'State': 'IN', 'StateNames': 'Indiana'},
+               {'State': 'KY', 'StateNames': 'Kentucky'}, {'State': 'LA', 'StateNames': 'Louisiana'},
+               {'State': 'MA', 'StateNames': 'Massachusetts'}, {'State': 'MI', 'StateNames': 'Michigan'},
+               {'State': 'NV', 'StateNames': 'Nevada'}, {'State': 'NJ', 'StateNames': 'New Jersey'},
+               {'State': 'NY', 'StateNames': 'New York'}, {'State': 'OH', 'StateNames': 'Ohio'},
+               {'State': 'OK', 'StateNames': 'Oklahoma'}, {'State': 'OR', 'StateNames': 'Oregon'},
+               {'State': 'PA', 'StateNames': 'Pennsylvania'}, {'State': 'TX', 'StateNames': 'Texas'},
+               {'State': 'UT', 'StateNames': 'Utah'}, {'State': 'WA', 'StateNames': 'Washington'},
+               {'State': 'WV', 'StateNames': 'West Virginia'}, {'State': 'WI', 'StateNames': ' Wisconsin'}]
 
-df_StateNames =pd.DataFrame(data= State_Names)
+df_StateNames = pd.DataFrame(data=State_Names)
 print(df_StateNames.T)
 
 # Join dataframes
 df_deposits1 = df_pivot.merge(df_StateNames, on='State')
 df_deposits2 = df_deposits1.merge(df_populations, on='StateNames')
 
-# Function to create reusable code. Note: Warning = 'PEP 8: E302 expected 2 blank lines.....' appears to be a bug
+# Function to create reusable code:
+
+
 def sub(a, b):
     c = a-b
     return c
