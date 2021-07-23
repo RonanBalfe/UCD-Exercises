@@ -7,8 +7,8 @@ import matplotlib.ticker as ticker
 import folium
 
 # Import csv files:
-df_deposits = pd.read_csv("/Users/Balfe/PycharmProjects/UCD Exercises/venv/database.csv")
-df_populations = pd.read_csv("/Users/Balfe/PycharmProjects/UCD Exercises/venv/2016_Pops.csv")
+df_deposits = pd.read_csv('/Users/Balfe/PycharmProjects/UCD Exercises/database.csv')
+df_populations = pd.read_csv('/Users/Balfe/PycharmProjects/UCD Exercises/2016_Pops.csv')
 
 # Adjust Run display so more columns are visible:
 pd.set_option('display.max_columns', 50)
