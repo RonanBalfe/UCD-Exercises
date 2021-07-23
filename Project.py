@@ -42,6 +42,10 @@ df_deposits = df_deposits.fillna(0)
 df_deposits['2010 Deposits'] = df_deposits['2010 Deposits'].astype(np.int64)
 print(df_deposits.describe(include='int64').T)
 
+# Grouping
+print(df_deposits.groupby("State")["2016 Deposits"].mean())
+print(df_deposits.groupby("State")["Branch Name"].count())
+
 # Subsetting - create Large deposits subset dataframe
 df_large = df_deposits.loc[df_deposits["2016 Deposits"] > 1000000, ("Branch Name", "2016 Deposits", "Latitude",
                                                                     "Longitude")]
@@ -54,10 +58,6 @@ for index, row in df_large.iterrows():
                   icon=folium.map.Icon(icon='usd')).add_to(Chase_map)
 Chase_map.save('Chase_map.html')
 
-# Pivots
-df_pivot = pd.pivot_table(df_deposits, ["2010 Deposits", "2013 Deposits", "2016 Deposits"], "State",
-                          aggfunc={"2010 Deposits": np.sum, "2013 Deposits": np.sum, "2016 Deposits": np.sum})
-
 # Iterrows
 for index, row in df_deposits.iterrows():
     df_deposits.loc[index, 'Movement since 2010'] = row['2016 Deposits'] - row['2010 Deposits']
@@ -66,8 +66,8 @@ print(df_deposits.head(20))
 # Indexing, sorting
 deposits_ind = df_deposits.set_index(["State"])
 deposits_ind.sort_index(level=["State"], ascending=[True])
-print(deposits_ind)
-print(deposits_ind.loc[["CA"]])
+print(deposits_ind.loc[["CA"]].head(5))
+print(deposits_ind.loc[["TX"]].head(5))
 
 # Subsetting - create subset dataframes for Large deposits in selected city groupings
 Is_NYC = df_deposits["City"] == "New York City"
@@ -75,8 +75,12 @@ Is_NYC_or_LA_or_CH = df_deposits["City"].isin(["New York City", "Los Angeles", "
 Is_Large = df_deposits["2016 Deposits"] > 1000000
 NYC_Large = df_deposits[Is_Large & Is_NYC]
 Multi_Large = df_deposits[Is_Large & Is_NYC_or_LA_or_CH]
-print(NYC_Large)
-print(Multi_Large)
+print(NYC_Large.head(5))
+print(Multi_Large.tail(5))
+
+# Pivots
+df_pivot = pd.pivot_table(df_deposits, ["2010 Deposits", "2013 Deposits", "2016 Deposits"], "State",
+                          aggfunc={"2010 Deposits": np.sum, "2013 Deposits": np.sum, "2016 Deposits": np.sum})
 
 # Dictionary
 State_Names = [{'State': 'AZ', 'StateNames': 'Arizona'}, {'State': 'CA', 'StateNames': 'California'},
@@ -114,7 +118,7 @@ print(sub(df_deposits2['2013 Deposits'].sum(), df_deposits2['2010 Deposits'].sum
 
 # Plotting
 # Fig 1: Total deposits by State
-ax = df_pivot.plot(kind="bar", title="Deposits by State", color=["forestgreen", "steelblue", "chocolate"], alpha=0.9)
+ax = df_pivot.plot(kind="bar", title="Deposits by State", color=["forestgreen", "khaki", "chocolate"], alpha=0.9)
 ylab = ax.set_ylabel('Deposit total ($mln)', weight='bold', size=12)
 xlab = ax.set_xlabel('US States', weight='bold', size=12)
 for label in ax.get_xticklabels():
@@ -138,8 +142,6 @@ ax.yaxis.set_major_formatter(ticks_y)
 plt.locator_params(axis="y", nbins=20)
 plt.show()
 
-# Grouping
-print(df_deposits2.groupby("State")["2016 Deposits"].mean())
 
 # JP Morgan Data from online API:
 api_data = requests.get('https://www.alphavantage.co/query?function=OVERVIEW&symbol=JPM&apikey=93WPKVHEISL8FOW3')
